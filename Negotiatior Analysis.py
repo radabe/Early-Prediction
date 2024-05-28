@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 import pandas as pd
 import numpy as np
 import seaborn as sns
@@ -13,41 +7,17 @@ from scipy import stats
 
 get_ipython().run_line_magic('matplotlib', 'inline')
 
-
-# In[ ]:
-
-
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_colwidth', None)
 pd.set_option('display.max_rows', 442)
 
-
-# In[ ]:
-
-
 case_length_no={1:0,2:257,3:445,4:910,5:726,6:1525,7:3053,8:3576,9:3891,10:3683,11:4332,12:8221,13:11690,14:11621,15:7574,16:8085,17:6835,
  18:3816,19:3608,20:3508,21:2197,22:1683,23:1821,24:2298,25:1554,26:1186,27:1260,28:1513,29:10472,30:0}
 
-
-# In[ ]:
-
-
 palette = ['#b2df8a','#33a02c','#a6cee3','#1f78b4','#cab2d6','#6a3d9a','#fb9a99','#e31a1c','#fdbf6f']#'#ffff99','#ff7f00'
 
-
-# In[ ]:
-
-
 sns.barplot(data=pd.DataFrame(np.cumsum(pd.DataFrame(data=case_length_no, index=(range(1))).loc[0])).T)
-
-
-# In[ ]:
-
-
 sns.barplot(pd.DataFrame(data=case_length_no, index=(range(1))))
-
-
-# In[ ]:
 
 
 alg_list=['rf','xgb','lstm']
@@ -108,41 +78,20 @@ for f in range(folders):
             for i in range(1,30):
                 eval_set.loc[i:,'case_length_{}'.format(i)]=np.NaN
 
-#                     eval_set=eval_set.T
-#                 eval_set['Algorithm']='{}{}'.format(alg,cls)
-
             full_set=pd.concat([full_set,eval_set])
     
             if alg=='lstm':
                 break
         if alg=='lstm':
             break
-        
-
-
-
-
-# In[ ]:
 
 
 full_set.reset_index(drop=True, inplace=True)
 
 
-# In[ ]:
-
-
 app_list=full_set['Approach'].unique()
 app_list=['RF_AGG','RF_AAGG','RF_CAGG','RF_IDX','XGB_AGG','XGB_AAGG','XGB_CAGG','XGB_IDX','LSTM']
-
-
-# In[ ]:
-
-
 app_list
-
-
-# In[ ]:
-
 
 long_set=pd.DataFrame(columns=['Approach','Case_Length','ROC','Prediction Point'])
 
@@ -157,17 +106,9 @@ for approach in app_list:#list(full_set['Approach'].unique()):
     
 long_set.reset_index(drop=True, inplace=True)
 
-
-# In[ ]:
-
-
 long_set.dropna(how='any', inplace=True)
 long_set.reset_index(inplace=True, drop=True)
 #long_set['ROC']=np.where(long_set['ROC']<0.5,1-long_set['ROC'],long_set['ROC'])
-
-
-# In[ ]:
-
 
 long_set_weighted=long_set.copy(deep=True)
 total=111340
@@ -178,10 +119,6 @@ for i in range(2,30):
 for i in range(1,30):
     long_set_weighted['ROC']=np.where(long_set_weighted['Prediction Point']=='E {}'.format(i),long_set_weighted['ROC']/total,long_set_weighted['ROC'])
     total-=case_length_no[i]
-
-
-# In[ ]:
-
 
 long_set.dropna(how='any', inplace=True)
 long_set.reset_index(inplace=True, drop=True)
@@ -200,15 +137,7 @@ approach_list=list(mean_set_cl['Approach'].unique())
 cl_list=list(mean_set_cl['Case_Length'].unique())
 pp_list=list(mean_set_pp['Prediction Point'].unique())
 
-
-# In[ ]:
-
-
 mean_set_pp_w
-
-
-# In[ ]:
-
 
 display_df_cl=pd.DataFrame(columns=['Approach'])
 
@@ -224,16 +153,7 @@ for app in app_list:
     
 display_df_cl.set_index('Approach',inplace=True)
 display_df_cl=display_df_cl[sorted(display_df_cl.columns, key=lambda x: int(x[3:]))]
-display_df_cl.to_excel('display_cl_roc.xlsx')
-
-
-# In[ ]:
-
-
 display_df_cl
-
-
-# In[ ]:
 
 
 display_df_pp=pd.DataFrame(columns=['Approach'])
@@ -252,10 +172,6 @@ display_df_pp.set_index('Approach',inplace=True)
 display_df_pp=display_df_pp[sorted(display_df_pp.columns, key=lambda x: int(x[2:]))]
 display_df_pp.to_excel('display_pp_roc.xlsx')
 
-
-# In[ ]:
-
-
 display_df_pp_w=pd.DataFrame(columns=['Approach'])
 
 
@@ -270,23 +186,8 @@ for app in app_list:
     
 display_df_pp_w.set_index('Approach',inplace=True)
 display_df_pp_w=display_df_pp_w[sorted(display_df_pp_w.columns, key=lambda x: int(x[2:]))]
-display_df_pp_w.to_excel('display_pp_roc.xlsx')
-
-
-# In[ ]:
-
-
 display_df_pp_w.columns=range(1,30)
-
-
-# In[ ]:
-
-
 display_df_pp_w.T
-
-
-# In[ ]:
-
 
 sns.set(rc={'figure.figsize':(3,3), 'xtick.top' : False, 'figure.dpi':1200})
 sns.set_theme(style="whitegrid", rc={'grid.linewidth':0.2})
@@ -307,26 +208,12 @@ s.spines['bottom'].set_linewidth(0.5)
 s.spines['top'].set_linewidth(0.5)
 s.spines['right'].set_linewidth(0.5)
 plt.xticks(rotation=90)
-
-#plt.legend()
 sns.move_legend(s, "center",bbox_to_anchor=(1.2, 0.5), ncol=1, title='Approach', frameon=False,fontsize=6,title_fontsize=7)
-
-
-# In[ ]:
-
 
 meanlong_auc_roc_df=long_set.groupby(['Approach','Case_Length'],sort=False).mean('ROC').reset_index()
 mean_auc_roc_df=long_set.groupby(['Approach','Case_Length'],sort=False).mean('ROC').reset_index().pivot(index='Approach', columns='Case_Length')
 
-
-# In[ ]:
-
-
 mean_auc_roc_df
-
-
-# In[ ]:
-
 
 sns.set(rc={'figure.figsize':(7,1.5), 'xtick.top' : False, 'figure.dpi':1200})
 sns.set_theme(style="whitegrid", rc={'grid.linewidth':0.2})
@@ -350,22 +237,7 @@ s.spines['right'].set_linewidth(0.5)
 plt.xticks(rotation=90)
 
 plt.savefig('Mean_AUC_ROC.svg',bbox_inches='tight')
-
-
-# In[ ]:
-
-
 long_set['Prefix Length']=long_set['Prediction Point'].apply(lambda x: int(x[2:]))
-
-
-# In[ ]:
-
-
-long_set
-
-
-# In[ ]:
-
 
 c=1
 
@@ -395,14 +267,8 @@ for i in range (2,30):
     s.spines['left'].set_linewidth(0.3)
     s.spines['bottom'].set_linewidth(0.3)
 
-    #sns.move_legend(s, "lower center",bbox_to_anchor=(0, -1), ncol=9, title='Approach', frameon=False,fontsize=6,title_fontsize=7)
-
     plt.savefig('grid_CL_{}.svg'.format(i),bbox_inches='tight')
     plt.clf()
-
-
-# In[ ]:
-
 
 i=2
 c=1
@@ -434,9 +300,6 @@ s.spines['bottom'].set_linewidth(0.3)
 sns.move_legend(s, "lower center",bbox_to_anchor=(0, -1), ncol=9, title='Approach', frameon=False,fontsize=6,title_fontsize=7)
 
 plt.savefig('grid_CL_Axis.svg'.format(i),bbox_inches='tight')
-
-
-# In[ ]:
 
 
 num_alg=len(approach_list)
@@ -573,14 +436,6 @@ for i in range(num_alg):
     k-=1
     if k<0:
         k=0
-
-# plt.savefig('Nemenyi_Mean.jpg', bbox_inches='tight',dpi=1200)
-# plt.savefig('Nemenyi_Mean.svg', bbox_inches='tight',dpi=1200)
-
-
-# In[ ]:
-
-
 num_alg=len(approach_list)
 num_runs=len(pp_list)
 
@@ -715,20 +570,6 @@ for i in range(num_alg):
     k-=1
     if k<0:
         k=0
-
-# plt.savefig('Nemenyi_Mean.jpg', bbox_inches='tight',dpi=1200)
-# plt.savefig('Nemenyi_Mean.svg', bbox_inches='tight',dpi=1200)
-
-
-# In[ ]:
-
-
-cl
-
-
-# In[ ]:
-
-
 num_alg=len(approach_list)
 num_runs=len(pp_list)
 
@@ -864,13 +705,6 @@ for i in range(num_alg):
     if k<0:
         k=0
 
-plt.savefig('Nemenyi_Mean.jpg', bbox_inches='tight',dpi=1200)
-# plt.savefig('Nemenyi_Mean.svg', bbox_inches='tight',dpi=1200)
-
-
-# In[ ]:
-
-
 #Temporal Stability RF_AAGG
 
 
@@ -936,23 +770,14 @@ for folder,app,colour in zip(app_list,app_list_2,palette):
     s.set_ylabel(None)
     s.set(xticklabels=[])
     s.set(yticklabels=[])
-#     s.tick_params(labelsize=5)
-    #plt.legend()
     s.spines['left'].set_linewidth(0.5)
     s.spines['bottom'].set_linewidth(0.5)
     s.spines['top'].set_linewidth(0.5)
     s.spines['right'].set_linewidth(0.5)
-#     s.set_xticks(range(2,30,4))
-
     
     collect_TS_df[folder]=TS_df['TS']
     collect_TS_df['case length']=range(2,30)
-    plt.savefig('Temporal_stability_{}.svg'.format(folder), bbox_inches='tight',dpi=1200)
     plt.clf()
-
-
-# In[ ]:
-
 
 collect_TS_df.set_index('case length', inplace=True)
 weighted_TS_df=collect_TS_df.copy(deep=True)
@@ -966,15 +791,7 @@ for col in weighted_TS_df.columns:
     weighted_sum_TS_df.loc[:,col]=weighted_TS_df.loc[:,col].sum()
     
 weighted_sum_TS_df.reset_index(drop=True, inplace=True)
-
-
-# In[ ]:
-
-
 weighted_sum_TS_df.sort_values(by=0,axis=1,ascending=False, inplace=True)
-
-
-# In[ ]:
 
 
 sns.set(rc={'figure.figsize':(4,1.5), 'xtick.top' : False, 'figure.dpi':1200})
@@ -990,24 +807,12 @@ s.set(ylim=(0.5,1))
 s.set_xlabel("Approach",fontsize=8)
 s.set_ylabel("Temporal Stability",fontsize=8)
 s.tick_params(labelsize=5)
-#plt.legend()
 s.spines['left'].set_linewidth(0.5)
 s.spines['bottom'].set_linewidth(0.5)
 s.spines['top'].set_linewidth(0.5)
 s.spines['right'].set_linewidth(0.5)
 plt.xticks(rotation=90)
-
-plt.savefig('TS.svg',bbox_inches='tight')
-
-
-# In[ ]:
-
-
 palette2 = ['#33a02c','#b2df8a','#1f78b4','#a6cee3','#e31a1c','#cab2d6','#6a3d9a','#fb9a99','#fdbf6f']#'#ffff99','#ff7f00'
-
-
-# In[ ]:
-
 
 approach_list=app_list
 pp_list=list(range(2,30))
@@ -1147,19 +952,6 @@ for i in range(num_alg):
     if k<0:
         k=0
 
-# plt.savefig('Nemenyi_Mean.jpg', bbox_inches='tight',dpi=1200)
-# plt.savefig('Nemenyi_Mean.svg', bbox_inches='tight',dpi=1200)
-
-
-# In[ ]:
-
-
-friedmann_df
-
-
-# In[ ]:
-
-
 #Temporal Stability RF_AAGG
 full_df=pd.DataFrame(data=None, columns=['case_length'])
 folder='RF_AGG'
@@ -1191,8 +983,7 @@ for Ti in range(2,30):
     summed_diff=0
     for t in range(2,Ti+1):
         summed_diff+=sum(abs(temp_df['pred_point_{}'.format(t)]-temp_df['pred_point_{}'.format(t-1)]))
-#         print(summed_diff)
-        
+       
     TS=1-(1/n)*(1/(Ti-1))*summed_diff
     case_length_val.append(Ti)
     TS_val.append(TS)
@@ -1206,10 +997,7 @@ s.set(xlabel='case length')
 plt.savefig('Temporal_stability_{}.jpg'.format(folder), bbox_inches='tight',dpi=300)
 
 
-# In[ ]:
-
-
-## Temporal Stability LSTM Network??
+## Temporal Stability LSTM Network
 full_df=pd.DataFrame(data=None, columns=['case_length'])
 
 for case_len in range (2,25):
@@ -1238,9 +1026,7 @@ for Ti in range(2,25):
     n=len(temp_df)
     summed_diff=0
     for t in range(2,Ti+1):
-        summed_diff+=sum(abs(temp_df['pred_point_{}'.format(t)]-temp_df['pred_point_{}'.format(t-1)]))
-#         print(summed_diff)
-        
+        summed_diff+=sum(abs(temp_df['pred_point_{}'.format(t)]-temp_df['pred_point_{}'.format(t-1)]))        
     TS=1-(1/n)*(1/(Ti-1))*summed_diff
     case_length_val.append(Ti)
     TS_val.append(TS)
@@ -1252,10 +1038,6 @@ s=sns.barplot(data=TS_df, x='index', y='TS', palette='dark:b')
 s.set(ylim=(0.5,1))
 s.set(xlabel='case length')
 
-
-# In[ ]:
-
-
 file_read='Results/probs_full.csv'.format(pred_point,case_len)
 full_df=pd.read_csv(file_read, header=None)
 
@@ -1265,10 +1047,6 @@ for i in range(1,30):
     
 full_df.columns=columns
 
-
-# In[ ]:
-
-
 case_length_val=[]
 TS_val=[]
 for Ti in range(2,30):
@@ -1277,8 +1055,7 @@ for Ti in range(2,30):
     summed_diff=0
     for t in range(2,Ti+1):
         summed_diff+=sum(abs(temp_df['pred_point_{}'.format(t)]-temp_df['pred_point_{}'.format(t-1)]))
-#         print(summed_diff)
-        
+       
     TS=1-(1/n)*(1/(Ti-1))*summed_diff
     print(TS, Ti)
     case_length_val.append(Ti)
@@ -1288,15 +1065,9 @@ TS_df=pd.DataFrame(data=TS_val, index=case_length_val, columns=['TS'])
 TS_df.reset_index(inplace=True)
 
 
-# In[ ]:
-
-
 s=sns.barplot(data=TS_df, x='index', y='TS', palette='dark:b')
 s.set(ylim=(0.9,1))
 s.set(xlabel='case length')
-
-
-# In[ ]:
 
 
 for Ti in range(2,30):
@@ -1304,13 +1075,10 @@ for Ti in range(2,30):
     n=len(temp_df)
     summed_diff=0
     summed_diff=sum(abs(temp_df['pred_point_{}'.format(Ti)]-temp_df['pred_point_1'.format(t-1)]))
-#         print(summed_diff)
-        
+      
     TS=1-(1/n)*(1/(2-1))*summed_diff
     print(TS, Ti)
 
-
-# In[ ]:
 
 
 for Ti in range(2,30):
@@ -1318,30 +1086,17 @@ for Ti in range(2,30):
     n=len(temp_df)
     summed_diff=0
     summed_diff=sum(abs(temp_df['pred_point_{}'.format(Ti)]-temp_df['pred_point_1'.format(t-1)]))
-#         print(summed_diff)
         
     TS=1-(1/n)*(1/(2-1))*summed_diff
     print(TS, Ti)
 
 
-
-# In[ ]:
-
-
 full_df[full_df['case_length']==25].reset_index(drop=True)
-
-
-# In[ ]:
-
 
 display_df=full_df[full_df['case_length']==10].reset_index(drop=True)
 display_df=display_df.loc[[1,5,10,50,100,150]].drop('case_length', axis=1)
 display_df.reset_index(inplace=True,drop=True)
 display_df=display_df.loc[:,:'pred_point_10']
-
-
-# In[ ]:
-
 
 sns.set(font_scale=0.5,rc={'figure.figsize':((5),(5)), "lines.linewidth": 2, 'figure.dpi':600, 'xtick.top' : False, 'markers.fillstyle': 'full', "lines.markersize":4,'lines.markeredgewidth':0 })
 sns.set_style("whitegrid")
@@ -1352,232 +1107,3 @@ plt.xticks(rotation=90)
 s.set(ylabel='Prediction score')
 s.set(xlabel='Prediction Point')
 s.set(ylim=(0,1))
-
-# s.set(xlim=(1,31))
-
-
-# In[ ]:
-
-
-static_list=['building_phase_pulk', 'is_launch', 'pte_derivative', 'manufacturer_country', 'pte_plant',
-             'Assessed_Manufacturer_Experience', 'unique_id_count', 'has_ldl', 'pte_plant_count',
-             'create->ctp', 'create->po_plan', 'create->earliestzet', 'part_number_after_count',
-             'create->goods_receipt', 'create->cf', 'create->latestzet', 'create->zet', 'is_intervall',
-             'change_type', 'no_derivates', 'manufacturer_number_count', 'severity_index', 'context_type',
-             'steering_level', 'set_status_90_frequency', 'has_pqm', 'has_ldlnafta', 'has_gams', 'is_admin_only',
-             'component', 'has_precursor', 'pkr_relevant', 'first_clearance', 'i_step', 'pn_relevant', 'gwk',
-            ]
-
-
-# In[ ]:
-
-
-palette
-
-
-# In[ ]:
-
-
-feature_df_15=pd.DataFrame(data=None)
-c=0
-
-for alg in ['XGB','RF']:
-    for app in app_list_2[:4]:
-
-        file_read='Results/Feature_Importances/{}/feature_importance{}_1.csv'.format(alg,app)
-        full_df=pd.read_csv(file_read, header=None)
-        full_df.columns=['Feature','Importance']
-        full_df['Feature']=np.where(full_df['Feature'].str.contains("Absicherungsstatus"),'Absicherungsstatus',full_df['Feature'])
-        full_df['Feature']=np.where((full_df['Feature'].str.contains("pte_plant")&(full_df['Feature']!='pte_plant_count')),'pte_plant',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature'].str.contains("pte_derivative"),'pte_derivative',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature'].str.contains("manufacturer_country"),'manufacturer_country',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="NON",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="MNG",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="PTE",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="NEU",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="FHW",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="BZW",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="SFD",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="ZB",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="SON",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="AI",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature']=="SNT",'change_type_detail',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature'].str.contains("context_type"),'context_type',full_df['Feature'])
-        full_df['Feature']=np.where(full_df['Feature'].str.contains("change_type"),'change_type',full_df['Feature'])
-        full_df=full_df.groupby('Feature', as_index=False).sum()
-        full_df=full_df.sort_values('Importance', ascending=False, kind='mergesort').reset_index(drop=True)
-        full_df['Prediction Point']='Prediction Point 1'
-        # test_df.set_index('Feature', inplace=True)
-        
-        feature_df_15[['Feature_{}{}_pp1'.format(alg,app),'Importance_{}{}_pp1'.format(alg,app,i)]]=full_df[['Feature', 'Importance']].head(15)
-
-
-        first_df=full_df
-
-        for i in range(2,30):
-
-            file_read='Results/Feature_Importances/{}/feature_importance{}_{}.csv'.format(alg,app,i)
-            test_df=pd.read_csv(file_read, header=None)
-            test_df.columns=['Feature','Importance']
-            test_df['Feature']=np.where(test_df['Feature'].str.contains("Absicherungsstatus"),'Absicherungsstatus',test_df['Feature'])
-            test_df['Feature']=np.where((test_df['Feature'].str.contains("pte_plant")&(test_df['Feature']!='pte_plant_count')),'pte_plant',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature'].str.contains("pte_derivative"),'pte_derivative',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature'].str.contains("manufacturer_country"),'manufacturer_country',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="NON",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="MNG",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="PTE",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="NEU",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="FHW",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="BZW",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="SFD",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="ZB",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="SON",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="AI",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature']=="SNT",'change_type_detail',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature'].str.contains("context_type"),'context_type',test_df['Feature'])
-            test_df['Feature']=np.where(test_df['Feature'].str.contains("change_type"),'change_type',test_df['Feature'])
-            test_df=test_df.groupby('Feature', as_index=False).sum()
-            test_df=test_df.sort_values('Importance', ascending=False, kind='mergesort').reset_index(drop=True)
-            test_df['Prediction Point']='Prediction Point {}'.format(i)
-            # test_df.set_index('Feature', inplace=True)
-
-            full_df=pd.concat([full_df, test_df])
-            
-            test_df.sort_values(by='Importance', ascending=False, inplace=True)
-            feature_df_15[['Feature_{}{}_pp{}'.format(alg,app,i),'Importance_{}{}_pp{}'.format(alg,app,i)]]=test_df[['Feature', 'Importance']].head(15)
-
-        full_df.reset_index(inplace=True, drop=True)    
-
-        for row in range(len(full_df)):
-            if full_df.loc[row,'Feature'] in static_list:
-                full_df.loc[row,'Type']='Static'
-            else:
-                full_df.loc[row,'Type']='Dynamic'
-        #         full_df.loc[row,'Importance']=1
-
-        full_df.fillna(0, inplace=True)
-
-        import matplotlib.patches as mpatches
-        short_df=full_df.groupby(['Type','Prediction Point'],as_index=False, sort=False).sum()
-        # load dataset
-        short_df
-
-        # set the figure size
-        plt.figure(figsize=(5, 5))
-
-        # from raw value to percentage
-        total=short_df.groupby('Prediction Point',as_index=False, sort=False).sum()
-        static = short_df[short_df.Type=='Static']
-
-        # bar chart 1 -> top bars (group of 'smoker=No')
-        bar1 = sns.barplot(x="Prediction Point",  y="Importance", data=total, color='#1f78b4',width=1)
-
-        # bar chart 2 -> bottom bars (group of 'smoker=Yes')
-        bar2 = sns.barplot(x="Prediction Point", y="Importance", data=static, color='#e31a1c',width=1)
-
-        # add legend
-        bar1.set_xticks([])
-        bar2.set_xticks([])
-        bar2.set_yticks([])
-        bar1.set_yticks([])
-
-        bar1.xaxis.set_tick_params(labelbottom=False)
-        bar1.yaxis.set_tick_params(labelleft=False)        
-        bar2.xaxis.set_tick_params(labelbottom=False)
-        bar2.yaxis.set_tick_params(labelleft=False)
-        
-        
-        # show the graph
-        plt.margins(0,0)
-        plt.xlabel(None)
-        plt.ylabel(None)
-        plt.ylim(0,1.02)
-        #plt.savefig('Feature_Importance_{}{}.svg'.format(alg,app), bbox_inches='tight',pad_inches = 0, dpi=1200)
-        
-
-
-        #plt.legend()
-
-        
-        
-        
-
-
-# In[ ]:
-
-
-feature_list=list(full_df['Feature'].unique())
-
-
-# In[ ]:
-
-
-long_df_feature=pd.DataFrame(data=None)
-feature_list=[]
-for col in feature_df_15.iloc[:15,range(0,464,2)].columns:
-        feature_list.append(list(feature_df_15.loc[:5,col]))
-    
-long_df_feature['Feature']=feature_list
-
-
-# In[ ]:
-
-
-long_df_feature.explode(column='Feature').value_counts()
-
-
-# In[ ]:
-
-
-feature_df_15.iloc[:10,406:].T
-
-
-# In[ ]:
-
-
-max_df=full_df.groupby('Feature').max('Importance')['Importance'].reset_index()
-max_df['Feature_renamed']=np.where(max_df['Importance']<0.01,'other',max_df['Feature'])
-
-
-# In[ ]:
-
-
-full_df=full_df.join(max_df.drop('Importance',axis=1).set_index('Feature'), on='Feature')
-
-
-# In[ ]:
-
-
-full_df.sort_values('Importance', ascending=True, kind='mergesort', inplace=True )
-full_df.sort_values('Prediction Point', ascending=True, kind='mergesort', inplace=True)
-
-
-# In[ ]:
-
-
-full_df['Feature_renamed'].unique()
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-full_df.to_excel('Importance.xlsx')
-
-
-# In[ ]:
-
-
-feature_df_15[:5].T
-
-
-# In[ ]:
-
-
-
-
